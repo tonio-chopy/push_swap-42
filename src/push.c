@@ -1,39 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   swap.c                                             :+:      :+:    :+:   */
+/*   push.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alaualik <alaualik@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/06 16:44:30 by alaualik          #+#    #+#             */
-/*   Updated: 2024/12/06 22:16:12 by alaualik         ###   ########.fr       */
+/*   Created: 2024/12/06 21:29:49 by alaualik          #+#    #+#             */
+/*   Updated: 2024/12/06 22:16:15 by alaualik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-void	swap_a(int *stack_a)
+void	push_a(int *stack_a, int *stack_b)
 {
-	int	temp;
-	
-	if(!stack[0] || !stack[1])
+	if(stack_b == 0)
 		return ;
-	temp = stack_a[0];
-	stack_a[0] = stack_a[1];
-	stack_a[1] = temp;
+	if(stack_b)
+		stack_a[0] = stack_b[0];
 }
 
-void	swap_b(int *stack_b)
+void	push_b(int *stack_a, int *stack_b)
 {
-	int	temp;
-	
-	if(!stack[0] || !stack[1])
+	if(stack_a == 0)
 		return ;
-	temp = stack_b[0];
-	stack_b[0] = stack_b[1];
-	stack_b[1] = temp;
-}
-
-void	ss(int *stack_a, int *stack_b)
-{
-	swap_a(stack_a);
-	swap_b(stack_b);
+	if(stack_a)
+		stack_b[0] = stack_a[0];
 }
