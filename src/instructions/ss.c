@@ -6,9 +6,15 @@
 /*   By: alaualik <alaualik@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 13:06:19 by alaualik          #+#    #+#             */
-/*   Updated: 2024/12/14 13:57:37 by alaualik         ###   ########.fr       */
+/*   Updated: 2024/12/14 20:34:25 by alaualik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <stdlib.h>
+
+void	ss(t_stack **a, t_stack **b)
+{
+	swap_a(a);
+	swap_b(b);
+}

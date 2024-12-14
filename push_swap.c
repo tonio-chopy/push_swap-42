@@ -1,107 +1,122 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push_swap.c                                        :+:      :+:    :+:   */
+/*   test.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alaualik <alaualik@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/06 13:07:47 by alaualik          #+#    #+#             */
-/*   Updated: 2024/12/14 12:02:55 by alaualik         ###   ########.fr       */
+/*   Created: 2024/12/14 10:44:57 by alaualik          #+#    #+#             */
+/*   Updated: 2024/12/14 20:35:04 by alaualik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <string.h>
 
-int ft_isdigit_str(char *str)
+typedef struct Node
 {
-    while (*str)
-    {
-        if (*str < '0' || *str > '9')
-            return (0);
-        str++;
+    int value;
+    struct Node* next;
+} Node;
+
+int is_duplicate(Node* stack, int value)
+{
+    Node* current = stack;
+    while (current)
+	{
+        if (current->value == value)
+            return 1;
+        current = current->next;
     }
-    return (1);
+    return 0;
 }
 
-int main(int ac, char **av)
+void push(Node** stack, int value)
 {
-    int i;
-    long num;
-    int *nums;
-    int j;
-    int is_duplicate;
-
-    if (ac < 2)
-    {
-        printf("Error.\n");
-        return (1);
+    Node* new_node = malloc(sizeof(Node));
+    if (!new_node)
+	{
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(1);
     }
+    new_node->value = value;
+    new_node->next = *stack;
+    *stack = new_node;
+}
 
-    nums = (int *)malloc((ac - 1) * sizeof(int));
-    if (!nums)
-    {
-        printf("Error.\n");
-        return (1);
+void free_stack(Node* stack)
+{
+    Node* temp;
+    while (stack)
+	{
+        temp = stack;
+        stack = stack->next;
+        free(temp);
     }
+}
 
-    i = 1;
-    j = 0;
-    while (i < ac)
-    {
-        if (!ft_isdigit_str(av[i]))
-        {
-            free(nums);
-            printf("Error.\n");
-            return (1);
+void parse_and_push(Node** stack, char* input)
+{
+    char* token = strtok(input, " ");
+    while (token != NULL)
+	{
+        char* end;
+        long num = strtol(token, &end, 10);
+
+        if (*end != '\0' || num < INT_MIN || num > INT_MAX)
+		{
+            printf("Error\n");
+            free_stack(*stack);
+            exit(1);
         }
 
-        num = strtol(av[i], NULL, 10);
+        int value = (int)num;
 
-        if (num < INT_MIN || num > INT_MAX)
-        {
-            free(nums);
-            printf("Error.\n");
-            return (1);
+        if (is_duplicate(*stack, value))
+		{
+            printf("Error\n");
+            free_stack(*stack);
+            exit(1);
         }
+        push(stack, value);
+        token = strtok(NULL, " ");
+    }
+}
 
-        is_duplicate = 0;
-        int k = 0;
-        while (k < j)
-        {
-            if (nums[k] == (int)num)
-            {
-                is_duplicate = 1;
-                break;
-            }
-            k++;
+int main(int argc, char* argv[])
+{
+    if (argc < 2)
+        return 1;
+    Node* stack = NULL;
+
+    for (int i = 1; i < argc; i++)
+	{
+        char* arg = argv[i];
+        if (arg[0] == '"' && arg[strlen(arg) - 1] == '"')
+		{
+            arg[strlen(arg) - 1] = '\0';
+            parse_and_push(&stack, arg + 1);
         }
-
-        if (is_duplicate)
-        {
-            free(nums);
-            printf("Error.\n");
-            return (1);
-        }
-
-        nums[j] = (int)num;
-        j++;
-
-        i++;
+		else
+            parse_and_push(&stack, arg);
     }
 
-    i = 0;
-    while (i < j)
-    {
-        if (i > 0)
-            printf(" - ");
-        printf("%d", nums[i]);
-        i++;
+    Node* current = stack;
+    int* values = malloc(sizeof(int) * argc);
+    int i = 0;
+    while (current)
+	{
+        values[i++] = current->value;
+        current = current->next;
     }
 
-    free(nums);
+    for (int j = i - 1; j >= 0; j--)
+        printf("%d ", values[j]);
     printf("\n");
 
-    return (0);
+    free(values);
+    free_stack(stack);
+    return 0;
 }
